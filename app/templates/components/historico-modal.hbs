@@ -1,0 +1,34 @@
+{{#bs-modal open=open size="lg" onHidden=(action (mut open) false) as |modal|}}
+  {{#modal.header}}
+    <h4 class="modal-title"><i class="glyphicon glyphicon-alert"></i>{{modalTitle}}</h4>
+  {{/modal.header}}
+  {{#modal.body}}
+    <table id="tbl-paciente-historico" class="table table-striped table-hover table-sm">
+      <thead>
+        <tr>
+          <th class="text-center" scope="col">Nome</th>
+          <th class="text-center" scope="col">Altura</th>
+          <th class="text-center" scope="col">Peso</th>
+          <th class="text-center" scope="col">Idade</th>
+          <th class="text-center" scope="col">IMC</th>
+          <th class="text-center" scope="col">Última Visita</th>
+        </tr>
+      </thead>
+      <tbody class="scroll">
+        {{#each versoes as |versao index|}}
+          <tr class="text-center">
+            <td class="paciente-nome" id="paciente-{{index}}-nomeCompleto">{{versao.nomeCompleto}}</td>
+            <td class="paciente-altura" id="paciente-{{index}}-altura">{{versao.altura}} cm</td>
+            <td class="paciente-peso" id="paciente-{{index}}-peso">{{versao.peso}} kg</td>
+            <td class="paciente-idade" id="paciente-{{index}}-idade">{{format-age versao.dataCadastro versao.dataNascimento}}</td>
+            <td class="paciente-imc" id="paciente-{{index}}-imc">{{versao.valorImc}}</td>
+            <td class="paciente-data-cadastro" id="paciente-{{index}}-dataCadastro">{{moment-format versao.dataCadastro "DD/MM/YYYY" "YYYY-MM-DDTHH:mm:ss.SSSZZ" allow-empty=true}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{/modal.body}}
+  {{#modal.footer}}
+    {{#bs-button onClick=(action modal.close) type="info"}}Fechar{{/bs-button}}
+  {{/modal.footer}}
+{{/bs-modal}}

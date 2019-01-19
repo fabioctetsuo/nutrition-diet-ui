@@ -1,0 +1,256 @@
+<div class="form-row">
+  <div class="col-md-7">
+    <label id="lblRange"><b>Consultar paciente: </b></label>
+  </div>
+</div>
+<div class="form-row">
+  <div class="col-md-4">
+    {{input type="text"
+      class="form-control"
+      id="input-filtro-nome"
+      value=nome
+      disabled=(or isLoading cpf)
+      enter=(perform buscarPacientes)
+      placeholder="Informe o nome (mínimo 3 caracteres)"}}
+  </div>
+  <div class="col-md-2">
+    {{input type="text"
+      class="form-control"
+      id="input-filtro-cpf"
+      value=cpf
+      disabled=(or isLoading nome)
+      enter=(perform buscarPacientes)
+      placeholder="Informe o CPF"}}
+  </div>
+  <div class="col-md-1">
+    {{#bs-button
+      type="info form-control"
+      id="btn-buscar-paciente"
+      outline=true
+      onClick=(perform buscarPacientes)
+      disabled=(or isLoading (not isValidSearch))}}
+      {{#if buscarPacientes.isIdle}}
+        Buscar
+      {{else}}
+        {{fa-icon "spinner" spin=true}}
+      {{/if}}
+    {{/bs-button}}
+  </div>
+  {{#bs-button
+    id="btn-novo-paciente"
+    type=(if (not showFormulario) "info" "secondary")
+    onClick=(action "toggleShowFormulario")
+    disabled=isLoading}}
+    {{#if (not showFormulario)}}
+      Novo Paciente
+    {{else}}
+      Cancelar
+    {{/if}}
+  {{/bs-button}}
+</div>
+
+<br><br>
+
+{{info-messages flashMessages=flashMessages}}
+
+{{#if showFormulario}}
+  <div class="jumbotron-form">
+    <div class="container">
+      <h4>Cadastro Paciente</h4>
+      <form id="form-cadastro-paciente">
+        <div class="form-row">
+          <div class="form-group col-md-2">
+            <label for="input-cpf" class="col-form-label col-form-label-sm">CPF *</label>
+            {{one-way-input-mask
+              paciente.cpf
+              mask="999.999.999-99"
+              class="form-control form-control-sm"
+              id="input-cpf"
+              placeholder="Informe o cpf"
+              disabled=isLoading
+              update=(action (mut paciente.cpf))
+            }}
+          </div>
+          <div class="form-group col-md-5">
+            <label class="col-form-label col-form-label-sm" for="input-nome">Nome *</label>
+            {{input type="text"
+              class="form-control form-control-sm"
+              id="input-nome"
+              value=paciente.primeiroNome
+              disabled=isLoading
+              placeholder="Digite o nome do paciente"}}
+          </div>
+          <div class="form-group col-md-5">
+            <label class="col-form-label col-form-label-sm" for="input-sobrenome">Sobrenome *</label>
+            {{input type="text"
+              class="form-control form-control-sm"
+              id="input-sobrenome"
+              value=paciente.sobrenome
+              disabled=isLoading
+              placeholder="Digite o sobrenome do paciente"}}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label class="col-form-label col-form-label-sm" for="input-sexo">Sexo *</label>
+            {{#power-select
+              selected=paciente.sexo
+              options=generos
+              placeholder="Selecione o sexo do paciente"
+              searchEnabled=false
+              triggerId="input-sexo"
+              triggerClass="form-control form-control-sm"
+              disabled=isLoading
+              onchange=(action (mut paciente.sexo))
+              as |name|
+            }}
+              {{name}}
+            {{/power-select}}
+          </div>
+          <div class="form-group col-md-3">
+            <label class="col-form-label col-form-label-sm" for="input-data-nascimento">Nascimento *</label>
+            {{one-way-date-mask
+              paciente.dataNascimento
+              options=(hash inputFormat="dd/mm/yyyy" outputFormat="dd/mm/yyyy")
+              class="form-control form-control-sm"
+              id="input-data-nascimento"
+              placeholder="Informe a data de nascimento"
+              disabled=isLoading
+              update=(action (mut paciente.dataNascimento))
+            }}
+          </div>
+          <div class="form-group col-md-3">
+            <label class="col-form-label col-form-label-sm" for="input-peso">Peso (kg) *</label>
+            {{input-money
+              id="input-peso"
+              class="form-control form-control-sm"
+              disabled=isLoading
+              number=paciente.peso
+              thousands="."
+              allowDecimal=true
+              allowNegative=false
+              decimal=","
+              placeholder="Digite o peso em quilos"
+            }}
+          </div>
+          <div class="form-group col-md-3">
+            <label class="col-form-label col-form-label-sm" for="input-altura">Altura (cm) *</label>
+            {{input-money
+              id="input-altura"
+              class="form-control form-control-sm"
+              disabled=isLoading
+              number=paciente.altura
+              thousands="."
+              allowDecimal=true
+              allowNegative=false
+              decimal=","
+              placeholder="Digite a altura em centimetros"
+            }}
+          </div>
+        </div>
+        <div class="form-row">
+          {{default-buttons
+            save=(perform savePaciente paciente)
+            clear=(action "clearForm")
+            disabled=isLoading
+            position="right"
+            saveId="btn-salvar-paciente"
+            clearId="btn-limpar-formulario"
+            isSalvarLoading=savePaciente.isRunning}}
+        </div>
+      </form>
+    </div>
+  </div>
+{{/if}}
+
+{{#if pacientes}}
+  <table id="tbl-pacientes" class="table table-striped table-hover table-sm">
+    <thead>
+      <tr>
+        <th class="text-center" scope="col">CPF</th>
+        <th class="text-center" scope="col">Nome</th>
+        <th class="text-center" scope="col">Data Nascimento</th>
+        <th class="text-center" scope="col">Idade</th>
+        <th class="text-center" scope="col">Altura</th>
+        <th class="text-center" scope="col">Peso</th>
+        <th class="text-center" scope="col">Sexo</th>
+        <th class="text-center" scope="col">IMC</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each pacientes as |paciente index|}}
+        {{#if (not paciente.isNew)}}
+          <tr class="text-center">
+            <td class="paciente-cpf" id="paciente-{{index}}-cpf">{{format-cpf paciente.cpf}}</td>
+            <td class="paciente-nomeCompleto" id="paciente-{{index}}-nomeCompleto">{{paciente.nomeCompleto}}</td>
+            <td class="paciente-dataNascimento" id="paciente-{{index}}-dataNascimento">{{paciente.dataNascimento}}</td>
+            <td class="paciente-idade" id="paciente-{{index}}-idade">{{paciente.idade}}</td>
+            <td class="paciente-altura" id="paciente-{{index}}-altura">{{paciente.altura}} cm</td>
+            <td class="paciente-peso" id="paciente-{{index}}-peso">{{paciente.peso}} kg</td>
+            <td class="paciente-sexo" id="paciente-{{index}}-sexo">{{paciente.sexo}}</td>
+            <td class="paciente-imc" id="paciente-{{index}}-imc">{{paciente.valorImc}}</td>
+            <td class="paciente-actions" id="paciente-{{index}}-actions">
+              {{#bs-button
+                type="light btn-sm btn-transparent"
+                disabled=isLoading
+                class="paciente-historico"
+                id=(concat "btn-paciente-" index "-historico")
+                onClick=(perform showHistoricoPacienteModal paciente)}}
+                {{#if showHistoricoPacienteModal.isIdle}}
+                  {{fa-icon "folder-open"
+                    ariaLabel=(concat "Acesse o histórico do paciente " paciente.nomeCompleto)}}
+                  {{#bs-tooltip placement="bottom"}}
+                    {{ concat "Histórico de " paciente.nomeCompleto }}
+                  {{/bs-tooltip}}
+                {{else}}
+                  {{fa-icon "spinner" spin=true}}
+                {{/if}}
+              {{/bs-button}}
+              {{#bs-button
+                type="light btn-sm btn-transparent"
+                disabled=isLoading
+                class="paciente-editar"
+                id=(concat "btn-paciente-" index "-editar")
+                onClick=(action "showEditarFormulario" paciente)}}
+                {{fa-icon "edit"
+                  ariaLabel=(concat "Acesse o formulário de edição do paciente " paciente.nomeCompleto)}}
+                {{#bs-tooltip placement="bottom"}}
+                  {{ concat "Editar " paciente.nomeCompleto }}
+                {{/bs-tooltip}}
+              {{/bs-button}}
+              {{#bs-button
+                type="light btn-sm btn-transparent"
+                disabled=isLoading
+                class="paciente-excluir"
+                id=(concat "btn-paciente-" index "-excluir")
+                onClick=(action "showExcluirModal" paciente)}}
+                {{fa-icon "trash"
+                  ariaLabel=(concat "Remova o paciente " paciente.nomeCompleto)}}
+                {{#bs-tooltip placement="bottom"}}
+                  {{ concat "Remover " paciente.nomeCompleto }}
+                {{/bs-tooltip}}
+              {{/bs-button}}
+            </td>
+          </tr>
+        {{/if}}
+      {{/each}}
+    </tbody>
+  </table>
+{{/if}}
+
+{{alert-modal
+  modalTitle="Cuidado!"
+  modalText=DEFAULT_CONFIRMATION_MESSAGE
+  open=showAlertModal
+  disabled=isLoading
+  isSubmitLoading=excluirPaciente.isRunning
+  onSubmit=(perform excluirPaciente)
+  onHidden=(action "cancelarAction")
+  cancelId="btn-cancelar-exclusao"
+  confirmId="btn-confirmar-exclusao"}}
+
+{{historico-modal
+  modalTitle="Histórico de Visitas do Paciente"
+  versoes=pacienteHistoricoSorted
+  open=showHistoricoModal}}

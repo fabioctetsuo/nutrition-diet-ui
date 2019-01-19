@@ -1,1 +1,31 @@
-@import "bootstrap";  
+@import "ember-bootstrap/bootstrap";
+@import "ember-bootstrap/functions";
+@import "ember-bootstrap/variables";
+@import "ember-bootstrap/mixins";
+
+// Optional - Bootstrapping/Resetting
+@import "ember-bootstrap/root";
+@import "ember-bootstrap/print";
+@import "ember-bootstrap/reboot";
+
+// Optional - Everything else
+@import "ember-bootstrap/type";
+@import "ember-bootstrap/buttons";
+
+// Import Custom Components
+@import "./components/alert.scss";
+@import "./components/button.scss";
+@import "./components/form.scss";
+@import "./components/input.scss";
+@import "./components/modal.scss";
+
+// Import Custom Pages Layout
+@import "./application/application.scss";
+@import "./application/navbar.scss";
+
+body {
+	padding-top: 20px;
+	background-color: azure
+}
+
+@import "ember-power-select";

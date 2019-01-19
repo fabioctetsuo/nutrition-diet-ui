@@ -1,0 +1,25 @@
+{{#bs-modal open=open onHidden=(action onHidden) onSubmit=(action onSubmit) as |modal|}}
+  {{#modal.header}}
+    <h4 class="modal-title"><i class="glyphicon glyphicon-alert"></i>{{modalTitle}}</h4>
+  {{/modal.header}}
+  {{#modal.body}}{{modalText}}{{/modal.body}}
+  {{#modal.footer}}
+    {{#bs-button
+      onClick=(action modal.close)
+      disabled=disabled type="danger"
+      id=cancelId}}
+      Cancelar
+    {{/bs-button}}
+    {{#bs-button
+      onClick=(action modal.submit)
+      disabled=disabled
+      type="success"
+      id=confirmId}}
+      {{#if (not isSubmitLoading)}}
+        Sim
+      {{else}}
+        {{fa-icon "spinner" spin=true}}
+      {{/if}}
+    {{/bs-button}}
+  {{/modal.footer}}
+{{/bs-modal}}
