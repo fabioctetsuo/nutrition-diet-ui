@@ -1,0 +1,21 @@
+<div class="col-md-12 text-{{position}}">
+  {{#bs-button
+    type="primary mr-1"
+    id=saveId
+    onClick=(action (action save))
+    disabled=disabled}}
+    {{#if (not isSalvarLoading)}}
+      Salvar
+    {{else}}
+      {{fa-icon "spinner" spin=true}}
+    {{/if}}
+  {{/bs-button}}
+  {{#bs-button
+    type="secondary"
+    id=clearId
+    outline=true
+    onClick=(action (action clear))
+    disabled=disabled}}
+    Limpar
+  {{/bs-button}}
+</div>

@@ -1,0 +1,29 @@
+{{#bs-navbar
+  type="dark nav-radius-sm"
+  backgroundColor="info"
+  collapsed=true
+  onCollapse=(action (mut collapsed) true)
+  onExpand=(action (mut collapsed) false) as |navbar|}}
+  <div class="container-fluid">
+    <div class="navbar-header">
+      {{navbar.toggle}}
+      {{#link-to "index" class="navbar-brand"}}
+        <img src="assets/images/avaliacao-nutricional.png" width="100" height="40" alt="Avaliação Nutricional">
+        {{#bs-tooltip placement="bottom"}}Sistema de Avaliação Nutricional{{/bs-tooltip}}
+      {{/link-to}}
+    </div>
+    {{#navbar.content}}
+      {{#navbar.nav as |nav|}}
+        {{#nav.item}}{{#nav.link-to "index"}}Painel de Controle{{/nav.link-to}}{{/nav.item}}
+        {{#nav.item}}{{#nav.link-to "paciente"}}Pacientes{{/nav.link-to}}{{/nav.item}}
+        {{#nav.item}}{{#nav.link-to "index"}}Dietas{{/nav.link-to}}{{/nav.item}}
+        {{#nav.dropdown as |dd|}}
+          {{#dd.toggle}}teste <span class="caret"></span>{{/dd.toggle}}
+          {{#dd.menu as |ddm|}}
+            {{#ddm.item}}{{#ddm.link-to "paciente"}}Pacientes{{/ddm.link-to}}{{/ddm.item}}
+          {{/dd.menu}}
+        {{/nav.dropdown}}
+      {{/navbar.nav}}
+    {{/navbar.content}}
+  </div>
+{{/bs-navbar}}
