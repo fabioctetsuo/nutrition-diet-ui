@@ -1,0 +1,26 @@
+{{#bs-modal open=open size="lg" onHidden=(action (mut open) false) as |modal|}}
+  {{#modal.header}}
+    <h4 class="modal-title"><i class="glyphicon glyphicon-alert"></i>{{modalTitle}}</h4>
+  {{/modal.header}}
+  {{#modal.body}}
+    <table id="tbl-paciente-historico" class="table table-striped table-hover table-sm">
+      <thead>
+        <tr>
+          <th class="text-center" scope="col">Injúria</th>
+          <th class="text-center" scope="col">Fator</th>
+        </tr>
+      </thead>
+      <tbody class="scroll">
+        {{#each fatoresInjurias as |fatorInjuria index|}}
+          <tr class="text-center">
+            <td class="paciente-nome" id="paciente-{{index}}-nomeCompleto">{{fatorInjuria.descricao}}</td>
+            <td class="paciente-altura" id="paciente-{{index}}-altura">{{fatorInjuria.fator}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{/modal.body}}
+  {{#modal.footer}}
+    {{#bs-button onClick=(action modal.close) type="info"}}Fechar{{/bs-button}}
+  {{/modal.footer}}
+{{/bs-modal}}

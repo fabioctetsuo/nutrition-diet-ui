@@ -10,7 +10,7 @@
       noMatchesMessage=NO_MATCHES_MESSAGE
       triggerId="input-nome-paciente"
       triggerClass="form-control form-control-sm"
-      onchange=(action (mut paciente))
+      onchange=(action "changePaciente")
       as |p|
     }}
       {{format-cpf p.cpf}} - {{p.nomeCompleto}}
@@ -18,7 +18,9 @@
   </div>
   <div class="form-group col-md-6 text-right">
     <label for="field-taxa-metabolica-basal" class="text-right"><b>Taxa Metabólica Basal</b></label>
-    <p id="field-taxa-metabolica-basal" class="text-right">{{dieta.taxaMetabolicaBasal}} kcal</p>
+    {{#if (not hasPaciente)}}
+      <p id="field-taxa-metabolica-basal" class="text-right">{{dieta.taxaMetabolicaBasal}} kcal</p>
+    {{/if}}
   </div>
 </div>
 <hr>
@@ -58,27 +60,40 @@
     {{/power-select}}
   </div>
   <div class="form-group col-md-3">
-    {{input
-      id="checkbox-fator-injuria"
-      type="checkbox"
-      click=(action "changeFator" value="target.checked")
-      disabled=hasPaciente
-      checked=dieta.hasFatorInjuria}}
-    <label for="checkbox-fator-injuria"><b>Fator Injúria </b></label>
-    {{input-money
-      id="input-fator-injuria"
-      class="form-control form-control-sm"
-      number=dieta.fatorInjuria
-      thousands="."
-      allowDecimal=true
-      allowNegative=false
-      disabled=(or (not dieta.hasFatorInjuria) hasPaciente)
-      decimal=","
-      placeholder="Digite o fator injúria"
-    }}
+    <div class="col-md-12 no-padding">
+      {{input
+        id="checkbox-fator-injuria"
+        type="checkbox"
+        click=(action "changeFator" value="target.checked")
+        disabled=hasPaciente
+        checked=dieta.hasFatorInjuria}}
+      <label for="checkbox-fator-injuria"><b>Fator Injúria </b></label>
+      {{#fa-icon "question-circle" class="content-align-right" click=(action "showFatorInjuriaModal")}}
+        {{#bs-tooltip placement="bottom"}}
+          Verificar tabela de fator injúria
+        {{/bs-tooltip}}
+      {{/fa-icon}}
+    </div>
+      {{input-money
+        id="input-fator-injuria"
+        class="form-control form-control-sm"
+        number=dieta.fatorInjuria
+        thousands="."
+        allowDecimal=true
+        allowNegative=false
+        disabled=(or (not dieta.hasFatorInjuria) hasPaciente)
+        decimal=","
+        placeholder="Digite o fator injúria"
+      }}
   </div>
   <div class="form-group col-md-3 text-right">
     <label for="field-gasto-energetico-total" class="text-right"><b>Gasto Energético Total</b></label>
-    <p id="field-gasto-energetico-total" class="text-right">{{dieta.gastoEnergeticoTotal}} kcal</p>
+    {{#if (not hasPaciente)}}
+      <p id="field-gasto-energetico-total" class="text-right">{{dieta.gastoEnergeticoTotal}} kcal</p>
+    {{/if}}
   </div>
 </div>
+
+{{fator-injuria-modal
+  open=showFatorInjuriaModal
+  modalTitle="Lista de Fatores Injúria"}}

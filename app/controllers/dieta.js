@@ -24,16 +24,31 @@ export default Controller.extend({
     return pacientes;
   }),
 
-  //Functions
+  //Computed and Observable Functions
   hasPaciente: computed('paciente', function () {
     if (this.get('paciente.codigo')) return false;
     return true;
   }),
 
+  //Functions
+  clearForm() {
+    this.set('fatorAtividade', null);
+    this.set('fatorTermico', null);
+    this.set('dieta.fatorInjuria', null);
+  },
+
+  // Ember Actions
   actions: {
+    changePaciente(paciente) {
+      this.set('paciente', paciente);
+      this.clearForm();
+    },
     changeFator(value) {
       this.set('dieta.hasFatorInjuria', value);
       if (!value) this.set('dieta.fatorInjuria', null);
-    }
+    },
+    showFatorInjuriaModal() {
+      this.set('showFatorInjuriaModal', true);
+    },
   }
 });
