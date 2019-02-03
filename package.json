@@ -46,6 +46,7 @@
     "ember-data": "~3.7.0",
     "ember-export-application-global": "^2.0.0",
     "ember-font-awesome": "^4.0.0-rc.4",
+    "ember-inflector": "^3.0.0",
     "ember-inputmask": "^0.8.5",
     "ember-load-initializers": "^1.1.0",
     "ember-maskmoney": "~0.4.3",

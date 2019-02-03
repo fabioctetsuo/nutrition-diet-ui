@@ -1,0 +1,84 @@
+<div class="form-row">
+  <div class="form-group col-md-6">
+    <label for="input-consulta-paciente"><b>Consulta Paciente: </b></label>
+    {{#power-select
+      selected=paciente
+      search=(perform buscarPacientes)
+      placeholder="Selecione o paciente"
+      searchMessage=""
+      searchPlaceholder="Digite o nome para buscar o paciente"
+      noMatchesMessage=NO_MATCHES_MESSAGE
+      triggerId="input-nome-paciente"
+      triggerClass="form-control form-control-sm"
+      onchange=(action (mut paciente))
+      as |p|
+    }}
+      {{format-cpf p.cpf}} - {{p.nomeCompleto}}
+    {{/power-select}}
+  </div>
+  <div class="form-group col-md-6 text-right">
+    <label for="field-taxa-metabolica-basal" class="text-right"><b>Taxa Metabólica Basal</b></label>
+    <p id="field-taxa-metabolica-basal" class="text-right">{{dieta.taxaMetabolicaBasal}} kcal</p>
+  </div>
+</div>
+<hr>
+<div class="form-row">
+  <div class="form-group col-md-3">
+    <label for="input-fator-atividade"><b>Fator Atividade: </b></label>
+    {{#power-select
+      selected=fatorAtividade
+      options=model.fatorAtividades
+      placeholder="Selecione o Fator Atividade"
+      searchEnabled=false
+      noMatchesMessage=NO_MATCHES_MESSAGE
+      triggerId="input-fator-atividade"
+      triggerClass="form-control form-control-sm"
+      onchange=(action (mut fatorAtividade))
+      disabled=hasPaciente
+      as |fator|
+    }}
+      {{fator.descricao}}
+    {{/power-select}}
+  </div>
+  <div class="form-group col-md-3">
+    <label for="input-fator-termico"><b>Fator Térmico: </b></label>
+    {{#power-select
+      selected=fatorTermico
+      options=model.fatorTermicos
+      placeholder="Selecione o Fator Térmico"
+      searchEnabled=false
+      noMatchesMessage=NO_MATCHES_MESSAGE
+      triggerId="input-fator-termico"
+      triggerClass="form-control form-control-sm"
+      onchange=(action (mut fatorTermico))
+      disabled=hasPaciente
+      as |fator|
+    }}
+      {{fator.descricao}}
+    {{/power-select}}
+  </div>
+  <div class="form-group col-md-3">
+    {{input
+      id="checkbox-fator-injuria"
+      type="checkbox"
+      click=(action "changeFator" value="target.checked")
+      disabled=hasPaciente
+      checked=dieta.hasFatorInjuria}}
+    <label for="checkbox-fator-injuria"><b>Fator Injúria </b></label>
+    {{input-money
+      id="input-fator-injuria"
+      class="form-control form-control-sm"
+      number=dieta.fatorInjuria
+      thousands="."
+      allowDecimal=true
+      allowNegative=false
+      disabled=(or (not dieta.hasFatorInjuria) hasPaciente)
+      decimal=","
+      placeholder="Digite o fator injúria"
+    }}
+  </div>
+  <div class="form-group col-md-3 text-right">
+    <label for="field-gasto-energetico-total" class="text-right"><b>Gasto Energético Total</b></label>
+    <p id="field-gasto-energetico-total" class="text-right">{{dieta.gastoEnergeticoTotal}} kcal</p>
+  </div>
+</div>
