@@ -2,15 +2,13 @@ import Controller from '@ember/controller';
 import { task, timeout } from 'ember-concurrency';
 import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
-import {
-  NO_MATCHES_MESSAGE,
-  OPERATION_SUCCESS_MESSAGE,
-  CREATE_SUCCESS_MESSAGE,
-  DEFAULT_CONFIRMATION_MESSAGE } from './constants/default-messages';
+import PACIENTE_OBJETIVOS from './constants/paciente-objetivos';
+import { NO_MATCHES_MESSAGE } from './constants/default-messages';
 
 export default Controller.extend({
   //Attributes
   NO_MATCHES_MESSAGE,
+  PACIENTE_OBJETIVOS,
   dieta: alias('model.dieta'),
   paciente: alias('model.dieta.paciente'),
   fatorAtividade: alias('model.dieta.fatorAtividade'),
@@ -22,6 +20,12 @@ export default Controller.extend({
     yield timeout(1500);
     const pacientes = yield store.query('paciente', { ativo: true, nome });
     return pacientes;
+  }),
+
+  changePaciente: task(function * (paciente) {
+    const store = this.get('store');
+    const dietas = yield store.query('dieta', { cpf: paciente.get('cpf') });
+    return dietas;
   }),
 
   //Computed and Observable Functions

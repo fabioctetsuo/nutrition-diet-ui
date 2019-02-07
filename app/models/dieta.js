@@ -8,17 +8,24 @@ export default DS.Model.extend({
   fatorTermico: DS.belongsTo('fator-termico'),
   hasFatorInjuria: DS.attr('boolean'),
   fatorInjuria: DS.attr('number'),
+  dataCadastro: DS.attr('string'),
 
   taxaMetabolicaBasal: computed('paciente', function () {
     const paciente = this.get('paciente');
+    const peso = paciente.get('peso');
+    const altura = paciente.get('alturaMetros');
+    const idade = paciente.get('idade');
+    const imc = Number(paciente.get('valorImc'));
+
     if (paciente.get('sexo') === 'Masculino') {
-      return calculoMasculinoTMB(paciente.get('peso'), paciente.get('altura'), paciente.get('idade'));
+      return calculoMasculinoTMB(peso, altura, idade, imc);
     }
     else if (paciente.get('sexo') === 'Feminino') {
-      return calculoFemininoTMB(paciente.get('peso'), paciente.get('altura'), paciente.get('idade'));
+      return calculoFemininoTMB(peso, altura, idade, imc);
     }
     return null;
   }),
+
   gastoEnergeticoTotal: computed(
     'paciente',
     'fatorAtividade',
